@@ -1,6 +1,6 @@
 from typing import Generator
 
-from sqlalchemy import create_engine, make_url, MetaData
+from sqlalchemy import create_engine, make_url, MetaData, NullPool
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 
@@ -9,9 +9,9 @@ from bingo_backend.main import get_settings
 
 def create_db_engine(connection_string: str):
     url = make_url(connection_string)
-    return create_engine(url, echo=True)
+    return create_engine(url, echo=True, poolclass=NullPool)
 
-engine = create_db_engine(get_settings().connection_string)
+engine = create_db_engine(get_settings().connection_string, )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

@@ -9,8 +9,10 @@ def get_settings():
 
 from bingo_backend.database.core import engine, Base
 from bingo_backend.api import router
+from bingo_backend.card.models import *
+from bingo_backend.cardspace.models import *
+from bingo_backend.space.models import *
 
-Base.metadata.create_all(engine)
 
 app = FastAPI()
 
