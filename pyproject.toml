@@ -1,0 +1,20 @@
+[project]
+name = "bingo-backend"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Nathan Connell",email = "basepointdesign@outlook.com"}
+]
+requires-python = ">=3.12"
+package-mode = false
+dependencies = [
+    "fastapi (>=0.121.0,<0.122.0)",
+    "uvicorn (>=0.38.0,<0.39.0)",
+    "sqlalchemy (==2.0.44)",
+    "pydantic-settings (==2.11.0)",
+    "psycopg2-binary (==2.9.11)"
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

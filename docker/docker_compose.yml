@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  database:
+    image: "postgres:latest"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: bingo
+
+    volumes:
+      - ../data/db-data:/var/lib/postgresql/data/
