@@ -1,6 +1,7 @@
 import json
-
 import pika
+from bingo_backend.utils.websock_manager import manager
+from asgiref.sync import async_to_sync
 from bingo_backend.main import get_settings
 
 
@@ -8,7 +9,11 @@ class MessageQueue:
     def __init__(self) -> None:
         # Initializing the Message Queue
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host="localhost", port=5672, heartbeat=600)
+            pika.ConnectionParameters(host=get_settings().message_queue_url,
+                                      port=5672,
+                                      heartbeat=600,
+                                      credentials=pika.PlainCredentials(get_settings().message_queue_username, get_settings().message_queue_password.get_secret_value()),
+                                      virtual_host=get_settings().message_queue_vhost)
         )
         self.channel = self.connection.channel()
         self.wsok_manager = manager
@@ -87,9 +92,9 @@ class MessageQueue:
 
     # RESEND MESSAGES VIA WEBSOCKET PER PERSON
     async def retry_unsent_messages(self, user_id: int):
-        user_message = self.get_user_messages(user_id)
-        if user_message != None:
-            for message in user_message:
+        user_meesage = self.get_user_messages(user_id)
+        if user_meesage != None:
+            for message in user_meesage:
                 if message != None:
                     message_status = await self.wsok_manager.personal_notification(
                         message

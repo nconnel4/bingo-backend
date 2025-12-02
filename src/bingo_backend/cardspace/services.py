@@ -4,7 +4,10 @@ from bingo_backend.cardspace.models import CardSpace
 from uuid import UUID
 
 def get_card_space(*, session: Session, space_id: UUID):
-        return session.query(CardSpace).filter(CardSpace.id == space_id).one_or_none()
+    return session.query(CardSpace).filter(CardSpace.id == space_id).one_or_none()
+
+def get_card_spaces_by_card_id(*, session, card_id: UUID):
+    return session.query(CardSpace).filter(CardSpace.card_id == card_id).all()
 
 def toggle_complete(*, session: Session, space_id: UUID):
     card_space = get_card_space(session=session, space_id=space_id)

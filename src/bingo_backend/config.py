@@ -17,5 +17,8 @@ class Settings(BaseSettings):
     message_queue_port: int = 5672
     message_queue_username: str
     message_queue_password: SecretStr
+    message_queue_vhost: str
+
+    redis_url: str
 
     model_config = SettingsConfigDict(env_file=".env")
