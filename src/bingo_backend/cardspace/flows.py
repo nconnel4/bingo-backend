@@ -2,8 +2,8 @@ from uuid import UUID
 
 from bingo_backend.card.models import Card
 from bingo_backend.cardspace.models import CardSpace
-from bingo_backend.cardspace.services import toggle_complete, get_card_spaces_by_card_id, get_card_space
-from bingo_backend.bingo.utils.bingohelper import has_bingo
+from bingo_backend.cardspace.services import get_card_spaces_by_card_id, get_card_space
+from bingo_backend.bingo.utils.bingohelper import check_has_bingo
 from bingo_backend.bingo.services import get_bingo_gif
 from bingo_backend.card.services import get_card_by_id
 from bingo_backend.database.redis import redis
@@ -18,11 +18,16 @@ async def check_bingo(*, session, space_id: UUID):
         card: Card = get_card_by_id(session=session, card_id=card_space.card_id)
 
         complete_spaces = [space.position for space in card_spaces if space.is_complete]
-        print(has_bingo(complete_spaces, card_space.position))
 
-        if has_bingo(complete_spaces, card_space.position):
+        has_bingo, remaining_spaces = check_has_bingo(complete_spaces, card_space.position)
+        notification = None
+
+        if has_bingo:
             gif = get_bingo_gif(session=session)
+            notification = NotificationMessage(event="bingo", message=f"{card.user} has bingo!", link=gif.link, description=gif.description)
+        elif remaining_spaces <= 2:
+            notification = NotificationMessage(event="message", message=f"⚠ {card.user} has {remaining_spaces} remaining spaces!")
 
-            notifcation = NotificationMessage(event="bingo", message=f"{card.user} has bingo!", link=gif.link, description=gif.description)
 
-            await redis.publish("notifications", notifcation.model_dump_json())
+        if notification:
+            await redis.publish("notifications", notification.model_dump_json())

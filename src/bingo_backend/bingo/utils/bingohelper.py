@@ -13,12 +13,15 @@ bingo_conditions = (
     (4, 8, 13, 16, 20)
 )
 
-def has_bingo(spaces, space):
+def check_has_bingo(spaces, space):
+    remaining_spaces = 5
     for condition in bingo_conditions:
-        print(condition)
-        print(spaces)
         if space in condition:
             if set(spaces).issuperset(condition):
-                return True
+                return True, 0
+            else:
+                space_count = len(set(spaces).intersection(condition))
+                if 5 - space_count < remaining_spaces:
+                    remaining_spaces = 5 - space_count
 
-    return False
+    return False, remaining_spaces
