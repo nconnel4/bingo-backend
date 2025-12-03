@@ -25,7 +25,7 @@ async def check_bingo(*, session, space_id: UUID):
         if has_bingo:
             gif = get_bingo_gif(session=session)
             notification = NotificationMessage(event="bingo", message=f"{card.user} has bingo!", link=gif.link, description=gif.description)
-        elif remaining_spaces <= 2:
+        elif remaining_spaces <= 1:
             notification = NotificationMessage(event="message", message=f"⚠ {card.user} has {remaining_spaces} remaining spaces!")
 
 
