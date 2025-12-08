@@ -18,13 +18,15 @@ async def check_bingo(*, session, space_id: UUID):
         card: Card = get_card_by_id(session=session, card_id=card_space.card_id)
 
         complete_spaces = [space.position for space in card_spaces if space.is_complete]
+        print(check_has_bingo(complete_spaces, card_space.position))
 
-        has_bingo, remaining_spaces = check_has_bingo(complete_spaces, card_space.position)
+
+        has_bingo, remaining_spaces, win_location = check_has_bingo(complete_spaces, card_space.position)
         notification = None
 
         if has_bingo:
             gif = get_bingo_gif(session=session)
-            notification = NotificationMessage(event="bingo", message=f"{card.user} has bingo!", link=gif.link, description=gif.description)
+            notification = NotificationMessage(event="bingo", message=f"{card.user} has a {win_location} bingo!", link=gif.link, description=gif.description)
         elif remaining_spaces <= 1:
             notification = NotificationMessage(event="warning", message=f"{card.user} has {remaining_spaces} remaining space!")
 
